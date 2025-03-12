@@ -20,21 +20,21 @@
 #define ARRAY_LENGTH(ARRAY) (sizeof(ARRAY) / sizeof((ARRAY)[0]))
 
 #define HR_CHECK(EXPRESSION) \
-    { \
-        HRESULT result = (EXPRESSION); \
-        if (result != S_OK) \
-        { \
-            printf("%s 0x%08X\n", #EXPRESSION, result); \
-        } \
-    }
+	{ \
+		HRESULT result = (EXPRESSION); \
+		if (result != S_OK) \
+		{ \
+			printf("%s 0x%08X\n", #EXPRESSION, result); \
+		} \
+	}
 
 #define COPY_INTO_CONSTANT_BUFFER(BUFFER, VALUE, SIZE) \
-    { \
-        D3D11_MAPPED_SUBRESOURCE mappedSubResource = { 0 }; \
-        HR_CHECK(gDeviceContext->Map((BUFFER), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource)); \
-        memcpy(mappedSubResource.pData, (VALUE), (SIZE)); \
-        gDeviceContext->Unmap((BUFFER), NULL); \
-    }
+	{ \
+		D3D11_MAPPED_SUBRESOURCE mappedSubResource = { 0 }; \
+		HR_CHECK(gDeviceContext->Map((BUFFER), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource)); \
+		memcpy(mappedSubResource.pData, (VALUE), (SIZE)); \
+		gDeviceContext->Unmap((BUFFER), NULL); \
+	}
 
 
 /////////////////////////////////////////////////
@@ -61,53 +61,53 @@ static ID3D11Buffer* sVertexBuffer = NULL;
 static ID3D11Buffer* sIndexBuffer = NULL;
 
 static CHAR sVertexShaderSource[] = R"hlsl(
-    cbuffer ModelViewProjection : register(b0)
-    {
-        matrix model;
-        matrix view;
-        matrix projection;
-    };
+	cbuffer ModelViewProjection : register(b0)
+	{
+		matrix model;
+		matrix view;
+		matrix projection;
+	};
 
-    struct VS_INPUT
-    {
-        float3 position : POSITION;
-        float4 color : COLOR;
-    };
-    
-    struct PS_INPUT
-    {
-        float4 position : SV_POSITION;
-        float4 color : COLOR;
-    };
-    
-    PS_INPUT VS(VS_INPUT input)
-    {
-        PS_INPUT output;
+	struct VS_INPUT
+	{
+		float3 position : POSITION;
+		float4 color : COLOR;
+	};
+	
+	struct PS_INPUT
+	{
+		float4 position : SV_POSITION;
+		float4 color : COLOR;
+	};
+	
+	PS_INPUT VS(VS_INPUT input)
+	{
+		PS_INPUT output;
 
-        float4 position = float4(input.position, 1.0f);
+		float4 position = float4(input.position, 1.0f);
 
-        position = mul(position, model);
-        position = mul(position, view);
-        position = mul(position, projection);
+		position = mul(position, model);
+		position = mul(position, view);
+		position = mul(position, projection);
 
-        output.position = position;
-        output.color = input.color;
+		output.position = position;
+		output.color = input.color;
 
-        return output;
-    }
+		return output;
+	}
 )hlsl";
 
 static CHAR sPixelShaderSource[] = R"hlsl(
-    struct PS_INPUT
-    {
-        float4 position : SV_POSITION;
-        float4 color : COLOR;
-    };
+	struct PS_INPUT
+	{
+		float4 position : SV_POSITION;
+		float4 color : COLOR;
+	};
 
-    float4 PS(PS_INPUT input) : SV_TARGET
-    {
-        return input.color;
-    }
+	float4 PS(PS_INPUT input) : SV_TARGET
+	{
+		return input.color;
+	}
 )hlsl";
 
 static D3D11_INPUT_ELEMENT_DESC sInputLayoutSource[] =
@@ -118,24 +118,24 @@ static D3D11_INPUT_ELEMENT_DESC sInputLayoutSource[] =
 
 static VERTEX sVertices[] =
 {
-    { XMFLOAT3{ -1.0f, -1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{  1.0f, -1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{  1.0f,  1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{ -1.0f,  1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{ -1.0f, -1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{  1.0f, -1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{  1.0f,  1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
-    { XMFLOAT3{ -1.0f,  1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{ -1.0f, -1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{  1.0f, -1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{  1.0f,  1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{ -1.0f,  1.0f, -1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{ -1.0f, -1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{  1.0f, -1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{  1.0f,  1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ XMFLOAT3{ -1.0f,  1.0f,  1.0f }, XMFLOAT4{ 1.0f, 0.0f, 0.0f, 1.0f } },
 };
 
 static UINT16 sIndices[] =
 {
-    0, 1, 2, 0, 2, 3,
-    4, 5, 6, 4, 6, 7,
-    4, 0, 3, 4, 3, 7,
-    1, 5, 6, 1, 6, 2,
-    3, 2, 6, 3, 6, 7,
-    4, 5, 1, 4, 1, 0,
+	0, 1, 2, 0, 2, 3,
+	4, 5, 6, 4, 6, 7,
+	4, 0, 3, 4, 3, 7,
+	1, 5, 6, 1, 6, 2,
+	3, 2, 6, 3, 6, 7,
+	4, 5, 1, 4, 1, 0,
 };
 
 /////////////////////////////////////////////////
@@ -172,11 +172,11 @@ VOID VaDestroyDefaultGeoRenderer(VOID)
 
 VOID VaRenderDefaultGeo(VOID)
 {
-    //gModelViewProjection.Model // TODO
+	//gModelViewProjection.Model // TODO
 
-    COPY_INTO_CONSTANT_BUFFER(sVertexBuffer, sVertices, sizeof(VERTEX) * ARRAY_LENGTH(sVertices));
-    COPY_INTO_CONSTANT_BUFFER(sIndexBuffer, sIndices, sizeof(UINT16) * ARRAY_LENGTH(sIndices));
-    COPY_INTO_CONSTANT_BUFFER(gModelViewProjectionBuffer, &gModelViewProjection, sizeof(MODEL_VIEW_PROJECTION));
+	COPY_INTO_CONSTANT_BUFFER(sVertexBuffer, sVertices, sizeof(VERTEX) * ARRAY_LENGTH(sVertices));
+	COPY_INTO_CONSTANT_BUFFER(sIndexBuffer, sIndices, sizeof(UINT16) * ARRAY_LENGTH(sIndices));
+	COPY_INTO_CONSTANT_BUFFER(gModelViewProjectionBuffer, &gModelViewProjection, sizeof(MODEL_VIEW_PROJECTION));
 
 	UINT32 stride = sizeof(VERTEX);
 	UINT32 offset = 0;
@@ -194,11 +194,11 @@ VOID VaRenderDefaultGeo(VOID)
 
 static VOID VaCreateShaders(VOID)
 {
-    HR_CHECK(D3DCompile(sVertexShaderSource, ARRAY_LENGTH(sVertexShaderSource), NULL, NULL, NULL, "VS", "vs_4_0", 0, 0, &sVertexShaderBlob, NULL));
-    HR_CHECK(D3DCompile(sPixelShaderSource, ARRAY_LENGTH(sPixelShaderSource), NULL, NULL, NULL, "PS", "ps_4_0", 0, 0, &sPixelShaderBlob, NULL));
+	HR_CHECK(D3DCompile(sVertexShaderSource, ARRAY_LENGTH(sVertexShaderSource), NULL, NULL, NULL, "VS", "vs_4_0", 0, 0, &sVertexShaderBlob, NULL));
+	HR_CHECK(D3DCompile(sPixelShaderSource, ARRAY_LENGTH(sPixelShaderSource), NULL, NULL, NULL, "PS", "ps_4_0", 0, 0, &sPixelShaderBlob, NULL));
 
-    HR_CHECK(gDevice->CreateVertexShader(sVertexShaderBlob->GetBufferPointer(), sVertexShaderBlob->GetBufferSize(), NULL, &sVertexShader));
-    HR_CHECK(gDevice->CreatePixelShader(sPixelShaderBlob->GetBufferPointer(), sPixelShaderBlob->GetBufferSize(), NULL, &sPixelShader));
+	HR_CHECK(gDevice->CreateVertexShader(sVertexShaderBlob->GetBufferPointer(), sVertexShaderBlob->GetBufferSize(), NULL, &sVertexShader));
+	HR_CHECK(gDevice->CreatePixelShader(sPixelShaderBlob->GetBufferPointer(), sPixelShaderBlob->GetBufferSize(), NULL, &sPixelShader));
 }
 static VOID VaCreateVertexBuffers(VOID)
 {

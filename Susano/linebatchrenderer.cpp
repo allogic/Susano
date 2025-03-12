@@ -24,20 +24,20 @@
 
 #define HR_CHECK(EXPRESSION) \
 	{ \
-	    HRESULT result = (EXPRESSION); \
-	    if (result != S_OK) \
-	    { \
-	        printf("%s 0x%08X\n", #EXPRESSION, result); \
-	    } \
+		HRESULT result = (EXPRESSION); \
+		if (result != S_OK) \
+		{ \
+			printf("%s 0x%08X\n", #EXPRESSION, result); \
+		} \
 	}
 
 #define COPY_INTO_CONSTANT_BUFFER(BUFFER, VALUE, SIZE) \
-    { \
-        D3D11_MAPPED_SUBRESOURCE mappedSubResource = { 0 }; \
-        HR_CHECK(gDeviceContext->Map((BUFFER), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource)); \
-        memcpy(mappedSubResource.pData, (VALUE), (SIZE)); \
-        gDeviceContext->Unmap((BUFFER), NULL); \
-    }
+	{ \
+		D3D11_MAPPED_SUBRESOURCE mappedSubResource = { 0 }; \
+		HR_CHECK(gDeviceContext->Map((BUFFER), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource)); \
+		memcpy(mappedSubResource.pData, (VALUE), (SIZE)); \
+		gDeviceContext->Unmap((BUFFER), NULL); \
+	}
 
 /////////////////////////////////////////////////
 // Type Definition
@@ -63,52 +63,52 @@ static ID3D11Buffer* sVertexBuffer = NULL;
 static ID3D11Buffer* sIndexBuffer = NULL;
 
 static CHAR sVertexShaderSource[] = R"hlsl(
-    cbuffer ModelViewProjection : register(b0)
-    {
-        matrix model;
-        matrix view;
-        matrix projection;
-    };
+	cbuffer ModelViewProjection : register(b0)
+	{
+		matrix model;
+		matrix view;
+		matrix projection;
+	};
 
-    struct VS_INPUT
-    {
-        float3 position : POSITION;
-        float4 color : COLOR;
-    };
-    
-    struct PS_INPUT
-    {
-        float4 position : SV_POSITION;
-        float4 color : COLOR;
-    };
-    
-    PS_INPUT VS(VS_INPUT input)
-    {
-        PS_INPUT output;
+	struct VS_INPUT
+	{
+		float3 position : POSITION;
+		float4 color : COLOR;
+	};
+	
+	struct PS_INPUT
+	{
+		float4 position : SV_POSITION;
+		float4 color : COLOR;
+	};
+	
+	PS_INPUT VS(VS_INPUT input)
+	{
+		PS_INPUT output;
 
-        float4 position = float4(input.position, 1.0f);
+		float4 position = float4(input.position, 1.0f);
 
-        position = mul(position, view);
-        position = mul(position, projection);
+		position = mul(position, view);
+		position = mul(position, projection);
 
-        output.position = position;
-        output.color = input.color;
+		output.position = position;
+		output.color = input.color;
 
-        return output;
-    }
+		return output;
+	}
 )hlsl";
 
 static CHAR sPixelShaderSource[] = R"hlsl(
-    struct PS_INPUT
-    {
-        float4 position : SV_POSITION;
-        float4 color : COLOR;
-    };
+	struct PS_INPUT
+	{
+		float4 position : SV_POSITION;
+		float4 color : COLOR;
+	};
 
-    float4 PS(PS_INPUT input) : SV_TARGET
-    {
-        return input.color;
-    }
+	float4 PS(PS_INPUT input) : SV_TARGET
+	{
+		return input.color;
+	}
 )hlsl";
 
 static D3D11_INPUT_ELEMENT_DESC sInputLayoutSource[] =
